@@ -14,11 +14,15 @@ create table pond(
     id integer primary key default nextval('pond_id_sequence'),
     pond_name varchar(200) not null,
     pond_location text);
+alter table pond add constraint pond_pond_name_uq
+    unique (pond_name);
 create sequence duck_id_sequence;
 create table duck(
     id integer primary key default nextval('duck_id_sequence'),
     duck_name varchar(200) not null, 
     tagged timestamptz not null);
+alter table duck add constraint duck_duck_name_uq
+    unique (duck_name);
 create sequence duck_travel_id_sequence;
 create table duck_travel(
     id integer primary key default nextval('duck_travel_id_sequence'),
@@ -30,6 +34,8 @@ alter table duck_travel add constraint duck_travel_pond_fk
     foreign key (pond_id) references pond(id) on delete cascade;
 alter table duck_travel add constraint duck_travel_duck_fk
     foreign key (duck_id) references duck(id) on delete cascade;
+alter table duck_travel add constraint duck_travel_duck_pond_arrival_uq
+    unique (pond_id, duck_id, arrival);
 
 create view names_activity_view as
     select d.duck_name, p.pond_name, dt.arrival, dt.departure
