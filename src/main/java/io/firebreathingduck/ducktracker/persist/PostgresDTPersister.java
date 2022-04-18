@@ -59,7 +59,7 @@ public class PostgresDTPersister implements DTPersister {
             return duckData;
         }
 
-        final String duckInsert = "insert into duck (id, pond_name, tagged) values (nextval('duck_id_sequence'), ?, ?) ";
+        final String duckInsert = "insert into duck (id, duck_name, tagged) values (nextval('duck_id_sequence'), ?, ?) ";
         // Quick way to set up a transaction without going into battle with Spring.
         try (Connection conn = jdbcTemplate.getDataSource().getConnection()) {
             conn.setAutoCommit(false);
@@ -103,7 +103,7 @@ public class PostgresDTPersister implements DTPersister {
             return pondData;
         }
 
-        final String pondInsert = "insert into pond (id, pond_name, pond_description) values (nextval('pond_id_sequence'), ?, ?) ";
+        final String pondInsert = "insert into pond (id, pond_name, pond_location) values (nextval('pond_id_sequence'), ?, ?) ";
         // Quick way to set up a transaction without going into battle with Spring.
         try (Connection conn = jdbcTemplate.getDataSource().getConnection()) {
             conn.setAutoCommit(false);
@@ -173,12 +173,18 @@ public class PostgresDTPersister implements DTPersister {
                 insertedId = rs.getInt(1);
             }
             conn.commit();
-            return Map.of(FieldNames.DUCK_TRAVEL_ID, insertedId,
-                FieldNames.DUCK_TRAVEL_DUCK_ID, duckTravelData.get(FieldNames.DUCK_TRAVEL_DUCK_ID),
-                FieldNames.DUCK_TRAVEL_POND_ID, duckTravelData.get(FieldNames.DUCK_TRAVEL_POND_ID),
-                FieldNames.DUCK_TRAVEL_ARRIVAL, duckTravelData.get(FieldNames.DUCK_TRAVEL_ARRIVAL),
-                FieldNames.DUCK_TRAVEL_DEPARTURE, duckTravelData.get(FieldNames.DUCK_TRAVEL_DEPARTURE)
-            );
+            if (duckTravelData.get(FieldNames.DUCK_TRAVEL_DEPARTURE) != null) {
+                return Map.of(FieldNames.DUCK_TRAVEL_ID, insertedId,
+                    FieldNames.DUCK_TRAVEL_DUCK_ID, duckTravelData.get(FieldNames.DUCK_TRAVEL_DUCK_ID),
+                    FieldNames.DUCK_TRAVEL_POND_ID, duckTravelData.get(FieldNames.DUCK_TRAVEL_POND_ID),
+                    FieldNames.DUCK_TRAVEL_ARRIVAL, duckTravelData.get(FieldNames.DUCK_TRAVEL_ARRIVAL),
+                    FieldNames.DUCK_TRAVEL_DEPARTURE, duckTravelData.get(FieldNames.DUCK_TRAVEL_DEPARTURE));
+            } else {
+                return Map.of(FieldNames.DUCK_TRAVEL_ID, insertedId,
+                    FieldNames.DUCK_TRAVEL_DUCK_ID, duckTravelData.get(FieldNames.DUCK_TRAVEL_DUCK_ID),
+                    FieldNames.DUCK_TRAVEL_POND_ID, duckTravelData.get(FieldNames.DUCK_TRAVEL_POND_ID),
+                    FieldNames.DUCK_TRAVEL_ARRIVAL, duckTravelData.get(FieldNames.DUCK_TRAVEL_ARRIVAL));
+            }
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);
         }
