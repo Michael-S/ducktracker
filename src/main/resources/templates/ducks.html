@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="https://www.thymeleaf.org">
-<head> 
+<head>
     <title>Ducks</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!--/* Content inside these XML comments with the Java comments are Thymeleaf comments.
@@ -9,7 +9,7 @@
 <body>
 	<h1>Ducks</h1>
     <form action="/api/ducks/create" id="duckCreator" name="duckCreator"
-        <!--/* th:action="@{/duck}" th:object="${duck}" */--> 
+        <!--/* th:action="@{/duck}" th:object="${duck}" */-->
         method="post">
     	<p>Name: <input type="text" <!--/* th:field="*{name}" */--> name="name" id="name"/></p>
         <p>Tagged: <input type="text" <!--/* th:field="*{tagged}" */--> name="tagged" id="tagged" /></p>
@@ -45,11 +45,10 @@
             ev.preventDefault();
             postData('/api/ducks/create', 'name=' + document.getElementById('name').value
                 + '&tagged=' + document.getElementById('tagged').value)
-                .then((ignored) => { 
+                .then(() => {
                     loadDucks();
                     document.getElementById('duckCreator').reset();
                 })
-                
         });
     }
 

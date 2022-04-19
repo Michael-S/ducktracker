@@ -19,5 +19,5 @@ public class FieldNames {
     public static final String DUCK_TRAVEL_POND_ID = "pond_id";
     public static final String DUCK_TRAVEL_ARRIVAL = "arrival";
     public static final String DUCK_TRAVEL_DEPARTURE = "departure";
-    
+
 }

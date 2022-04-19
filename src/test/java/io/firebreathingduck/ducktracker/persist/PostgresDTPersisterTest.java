@@ -26,7 +26,7 @@ import io.firebreathingduck.ducktracker.domain.FieldNames;
 /**
  * I haven't used Mockito before, colleagues have used it.  I thought I would
  * take it for a spin here.
- * 
+ *
  * If this was a production app there would be a lot more tests, and I would use
  * an in-memory database for the testing.  I might still use Mockito in some cases.
  */
@@ -86,7 +86,7 @@ public class PostgresDTPersisterTest {
             assertEquals("Feathers", insertedDuck.get(FieldNames.DUCK_NAME));
             assertEquals(now, insertedDuck.get(FieldNames.DUCK_TAGGED));
         } catch (SQLException sqle) {
-            throw new RuntimeException("SQLException during test.", sqle);   
+            throw new RuntimeException("SQLException during test.", sqle);
         }
     }
 

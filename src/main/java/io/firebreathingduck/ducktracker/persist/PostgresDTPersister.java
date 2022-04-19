@@ -80,7 +80,7 @@ public class PostgresDTPersister implements DTPersister {
                 FieldNames.DUCK_TAGGED, duckData.get(FieldNames.DUCK_TAGGED));
         } catch (SQLException sqle) {
             throw new RuntimeException(sqle);
-        }        
+        }
     }
 
     @Override

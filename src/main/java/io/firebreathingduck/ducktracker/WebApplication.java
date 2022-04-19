@@ -77,9 +77,9 @@ public class WebApplication {
 	}
 
 	@PostMapping("/api/ducks/create")
-	public ModelAndView createDuck(@RequestParam(value = "name") String duckName, 
+	public ModelAndView createDuck(@RequestParam(value = "name") String duckName,
 		@RequestParam(value = "tagged") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date tagged) {
-		Map<String, Object> createdDuck = Map.of(FieldNames.DUCK_NAME, duckName, 
+		Map<String, Object> createdDuck = Map.of(FieldNames.DUCK_NAME, duckName,
 			FieldNames.DUCK_TAGGED, tagged);
 		createdDuck = new PostgresDTPersister(jdbcTemplate).saveDuck(createdDuck);
 		String redirectPattern = "redirect:/api/ducks/" + createdDuck.get(FieldNames.DUCK_ID);
@@ -105,9 +105,9 @@ public class WebApplication {
 	}
 
 	@PostMapping("/api/ponds/create")
-	public ModelAndView createPond(@RequestParam(value = "name") String pondName, 
+	public ModelAndView createPond(@RequestParam(value = "name") String pondName,
 		@RequestParam(value = "location") String pondLocation) {
-		Map<String, Object> createdPond = Map.of(FieldNames.POND_NAME, pondName, 
+		Map<String, Object> createdPond = Map.of(FieldNames.POND_NAME, pondName,
 			FieldNames.POND_LOCATION, pondLocation);
 		createdPond = new PostgresDTPersister(jdbcTemplate).savePond(createdPond);
 		String redirectPattern = "redirect:/api/ponds/" + createdPond.get(FieldNames.POND_ID);
@@ -145,7 +145,7 @@ public class WebApplication {
 	}
 
 	@PostMapping("/api/ducktravel/create")
-	public ModelAndView createDuckTravel(@RequestParam(value = "duckId") Integer duckId, 
+	public ModelAndView createDuckTravel(@RequestParam(value = "duckId") Integer duckId,
 		@RequestParam(value = "pondId") Integer pondId, @RequestParam(value = "arrival")
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date arrival,
 		@RequestParam(value = "departure", required = false)

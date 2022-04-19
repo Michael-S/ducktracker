@@ -7,10 +7,10 @@ import java.util.List;
 /**
  * I'm going to defy standard Java convention and have my objects that map to database tables
  * as immutable maps.
- * 
+ *
  * That's mostly because this is a toy project. But I might be tempted to do the same with a real
  * Java application.  The Clojure community has taught me on the value of immutable data structures.
- * 
+ *
  */
 public interface DTPersister {
 

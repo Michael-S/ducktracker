@@ -19,14 +19,14 @@ alter table pond add constraint pond_pond_name_uq
 create sequence duck_id_sequence;
 create table duck(
     id integer primary key default nextval('duck_id_sequence'),
-    duck_name varchar(200) not null, 
+    duck_name varchar(200) not null,
     tagged timestamptz not null);
 alter table duck add constraint duck_duck_name_uq
     unique (duck_name);
 create sequence duck_travel_id_sequence;
 create table duck_travel(
     id integer primary key default nextval('duck_travel_id_sequence'),
-    pond_id integer not null, 
+    pond_id integer not null,
     duck_id integer not null,
     arrival timestamptz not null,
     departure timestamptz);
