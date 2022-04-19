@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head> 
+    <title>Ponds</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>Ponds</h1>
+    <form action="/api/ponds/create" 
+        method="post">
+    	<p>Name: <input type="text" name="name" id="name"/></p>
+        <p>Location: <input type="text" name="location" id="location" /></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+    <table id="ponds">
+        <thead><tr><td>Pond Name</td><td>Pond Location</td></tr></thead>
+        <tbody></tbody>
+    </table>
+    <script>
+    function loadPonds() {
+        const request = new XMLHttpRequest();
+        const pondTable = document.getElementById("ponds");
+        request.open('GET', '/api/ponds', true);
+        request.onload = function() {
+            if (this.status >= 200 && this.status < 400) {
+                const resp = JSON.parse(this.response);
+                resp.forEach(element => {
+                    let pondRow = pondTable.insertRow(-1);
+                    let pondNameCell = pondRow.insertCell(0);
+                    pondNameCell.appendChild(document.createTextNode(element['pond_name']));
+                    let pondLocationCell = pondRow.insertCell(1);
+                    pondLocationCell.appendChild(document.createTextNode(element['pond_location']));
+                });
+                console.log(resp);
+            } else {
+                console.log(this.status);
+            }
+        };
+
+        request.onerror = function() {
+        // There was a connection error of some sort
+        };
+        request.send();
+    }
+
+
+
+
+    function ready(fn) {
+      if (document.readyState != 'loading'){
+        fn();
+      } else {
+        document.addEventListener('DOMContentLoaded', fn);
+      }
+    }
+    ready(loadPonds);
+    </script>
+</body>
+</html>

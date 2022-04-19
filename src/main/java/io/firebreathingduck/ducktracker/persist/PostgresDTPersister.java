@@ -46,7 +46,7 @@ public class PostgresDTPersister implements DTPersister {
 
     @Override
     public List<Map<String, Object>> getAllDucks() {
-        return query("select * from duck order by id ");
+        return query("select * from duck order by lower(duck_name) ");
     }
 
     @Override
@@ -85,12 +85,12 @@ public class PostgresDTPersister implements DTPersister {
 
     @Override
     public Map<String, Object> getDuck(int id) {
-        return queryGetFirstResult("select * from duck where id = ? order by id", id);
+        return queryGetFirstResult("select * from duck where id = ? order by lower(duck_name)", id);
     }
 
     @Override
     public List<Map<String, Object>> getAllPonds() {
-        return query("select * from pond order by id ");
+        return query("select * from pond order by lower(pond_name) ");
     }
 
     @Override

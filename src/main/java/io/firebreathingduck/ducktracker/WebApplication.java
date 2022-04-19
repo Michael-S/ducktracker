@@ -58,13 +58,13 @@ public class WebApplication {
 		}
 	}
 
-	@GetMapping("/ducks")
+	@GetMapping("/api/ducks")
 	public String getDucks() {
 		List<Map<String, Object>> ducks = new PostgresDTPersister(jdbcTemplate).getAllDucks();
 		return getAsJson(ducks);
 	}
 
-	@GetMapping("/ducks/{id}")
+	@GetMapping("/api/ducks/{id}")
 	public String getDuck(@PathVariable("id") Integer id) {
 		Map<String, Object> duck = null;
 		if (id != null) {
@@ -76,23 +76,23 @@ public class WebApplication {
 		return getAsJson(duck);
 	}
 
-	@PostMapping("/ducks/create")
+	@PostMapping("/api/ducks/create")
 	public ModelAndView createDuck(@RequestParam(value = "name") String duckName, 
 		@RequestParam(value = "tagged") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date tagged) {
 		Map<String, Object> createdDuck = Map.of(FieldNames.DUCK_NAME, duckName, 
 			FieldNames.DUCK_TAGGED, tagged);
 		createdDuck = new PostgresDTPersister(jdbcTemplate).saveDuck(createdDuck);
-		String redirectPattern = "redirect:/ducks/" + createdDuck.get(FieldNames.DUCK_ID);
+		String redirectPattern = "redirect:/api/ducks/" + createdDuck.get(FieldNames.DUCK_ID);
 		return new ModelAndView(redirectPattern);
 	}
 
-	@GetMapping("/ponds")
+	@GetMapping("/api/ponds")
 	public String getPonds() {
 		List<Map<String, Object>> ponds = new PostgresDTPersister(jdbcTemplate).getAllPonds();
 		return getAsJson(ponds);
 	}
 
-	@GetMapping("/ponds/{id}")
+	@GetMapping("/api/ponds/{id}")
 	public String getPond(@PathVariable("id") Integer id) {
 		Map<String, Object> pond = null;
 		if (id != null) {
@@ -104,23 +104,23 @@ public class WebApplication {
 		return getAsJson(pond);
 	}
 
-	@PostMapping("/ponds/create")
+	@PostMapping("/api/ponds/create")
 	public ModelAndView createPond(@RequestParam(value = "name") String pondName, 
 		@RequestParam(value = "location") String pondLocation) {
 		Map<String, Object> createdPond = Map.of(FieldNames.POND_NAME, pondName, 
 			FieldNames.POND_LOCATION, pondLocation);
 		createdPond = new PostgresDTPersister(jdbcTemplate).savePond(createdPond);
-		String redirectPattern = "redirect:/ponds/" + createdPond.get(FieldNames.POND_ID);
+		String redirectPattern = "redirect:/pond/";
 		return new ModelAndView(redirectPattern);
 	}
 
-	@GetMapping("/ducktravel")
+	@GetMapping("/api/ducktravel")
 	public String getDuckTravel() {
 		List<Map<String, Object>> duckTravels = new PostgresDTPersister(jdbcTemplate).getAllDuckTravel();
 		return getAsJson(duckTravels);
 	}
 
-	@GetMapping("/ducktravel/duck/{id}")
+	@GetMapping("/api/ducktravel/duck/{id}")
 	public String getDuckTravelByDuck(@PathVariable("id") Integer id) {
 		List<Map<String, Object>> duckTravels = null;
 		if (id != null) {
@@ -132,7 +132,7 @@ public class WebApplication {
 		return getAsJson(duckTravels);
 	}
 
-	@GetMapping("/ducktravel/pond/{id}")
+	@GetMapping("/api/ducktravel/pond/{id}")
 	public String getDuckTravelByPond(@PathVariable("id") Integer id) {
 		List<Map<String, Object>> duckTravels = null;
 		if (id != null) {
@@ -144,7 +144,7 @@ public class WebApplication {
 		return getAsJson(duckTravels);
 	}
 
-	@PostMapping("/ducktravel/create")
+	@PostMapping("/api/ducktravel/create")
 	public ModelAndView createDuckTravel(@RequestParam(value = "duckId") Integer duckId, 
 		@RequestParam(value = "pondId") Integer pondId, @RequestParam(value = "arrival")
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date arrival,
@@ -160,7 +160,7 @@ public class WebApplication {
 				FieldNames.DUCK_TRAVEL_POND_ID, pondId, FieldNames.DUCK_TRAVEL_ARRIVAL, arrival);
 		}
 		new PostgresDTPersister(jdbcTemplate).saveDuckTravel(createdDuckTravel);
-		String redirectPattern = "redirect:/ducktravel/duck/" + duckId;
+		String redirectPattern = "redirect:/api/ducktravel/duck/" + duckId;
 		return new ModelAndView(redirectPattern);
 	}
 
