@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DucksController {
 
-    @GetMapping("/duck")
-    public String duckForm(Model model) {
+    @GetMapping("/ducks")
+    public String ducksForm(Model model) {
         //model.addAttribute("duck", new Duck());
-        return "duck";
+        return "ducks";
     }
 
-    @GetMapping("/pond")
-    public String pondForm(Model model) {
-        return "pond";
+    @GetMapping("/ponds")
+    public String pondsForm(Model model) {
+        return "ponds";
     }
 
     /*
