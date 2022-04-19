@@ -6,7 +6,7 @@
 </head>
 <body>
 	<h1>Ponds</h1>
-    <form action="/api/ponds/create" 
+    <form id="pondCreator" name="pondCreator" action="/api/ponds/create" 
         method="post">
     	<p>Name: <input type="text" name="name" id="name"/></p>
         <p>Location: <input type="text" name="location" id="location" /></p>
@@ -17,34 +17,52 @@
         <tbody></tbody>
     </table>
     <script>
+    // Taken from the Mozilla Developer's Network example.  Overkill for this purpose, refine later.
+    async function postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                //'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'                
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            //body: JSON.stringify(data) // body data type must match "Content-Type" header
+            body: data
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+
     function loadPonds() {
-        const request = new XMLHttpRequest();
         const pondTable = document.getElementById("ponds");
-        request.open('GET', '/api/ponds', true);
-        request.onload = function() {
-            if (this.status >= 200 && this.status < 400) {
-                const resp = JSON.parse(this.response);
-                resp.forEach(element => {
+        const previousRows = pondTable.querySelectorAll('tr');
+        Array.prototype.forEach.call(previousRows, function(row) { row.remove(); });
+        fetch('/api/ponds')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(element => {
                     let pondRow = pondTable.insertRow(-1);
                     let pondNameCell = pondRow.insertCell(0);
                     pondNameCell.appendChild(document.createTextNode(element['pond_name']));
                     let pondLocationCell = pondRow.insertCell(1);
                     pondLocationCell.appendChild(document.createTextNode(element['pond_location']));
                 });
-                console.log(resp);
-            } else {
-                console.log(this.status);
-            }
-        };
-
-        request.onerror = function() {
-        // There was a connection error of some sort
-        };
-        request.send();
+                console.log(data);
+            });
     }
 
-
-
+    function handlePondForm() {
+        document.getElementById('pondCreator').addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            postData('/api/ponds/create', 'name=' + document.getElementById('name').value
+                + '&location=' + document.getElementById('location').value)
+                .then(loadPonds);
+        });
+    }
 
     function ready(fn) {
       if (document.readyState != 'loading'){
@@ -54,6 +72,7 @@
       }
     }
     ready(loadPonds);
+    ready(handlePondForm);
     </script>
 </body>
 </html>

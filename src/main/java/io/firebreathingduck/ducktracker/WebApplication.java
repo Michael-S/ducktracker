@@ -110,7 +110,7 @@ public class WebApplication {
 		Map<String, Object> createdPond = Map.of(FieldNames.POND_NAME, pondName, 
 			FieldNames.POND_LOCATION, pondLocation);
 		createdPond = new PostgresDTPersister(jdbcTemplate).savePond(createdPond);
-		String redirectPattern = "redirect:/pond/";
+		String redirectPattern = "redirect:/api/ponds/" + createdPond.get(FieldNames.POND_ID);
 		return new ModelAndView(redirectPattern);
 	}
 
