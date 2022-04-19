@@ -37,8 +37,8 @@ alter table duck_travel add constraint duck_travel_duck_fk
 alter table duck_travel add constraint duck_travel_duck_pond_arrival_uq
     unique (pond_id, duck_id, arrival);
 
-create view names_activity_view as
-    select d.duck_name, p.pond_name, dt.arrival, dt.departure
+create view duck_travel_view as
+    select d.duck_name, p.pond_name, dt.duck_id, dt.pond_id, dt.arrival, dt.departure
     from duck d, pond p, duck_travel dt
     where
         dt.duck_id = d.id and

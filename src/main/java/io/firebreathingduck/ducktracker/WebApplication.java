@@ -43,7 +43,7 @@ public class WebApplication {
 		DTPersister persister = new PostgresDTPersister(jdbcTemplate);
 		String ducks = persister.getAllDucks().toString();
 		String ponds = persister.getAllPonds().toString();
-		String duckTravels = persister.getAllDuckTravel().toString();
+		String duckTravels = persister.getAllDuckTravelViews().toString();
 
 		return String.format("Hello %s! The ducks are %s, the ponds are %s, and the travel is %s.",
 			name, ducks, ponds, duckTravels);
@@ -114,17 +114,17 @@ public class WebApplication {
 		return new ModelAndView(redirectPattern);
 	}
 
-	@GetMapping("/api/ducktravel")
+	@GetMapping("/api/ducktravels")
 	public String getDuckTravel() {
-		List<Map<String, Object>> duckTravels = new PostgresDTPersister(jdbcTemplate).getAllDuckTravel();
+		List<Map<String, Object>> duckTravels = new PostgresDTPersister(jdbcTemplate).getAllDuckTravelViews();
 		return getAsJson(duckTravels);
 	}
 
-	@GetMapping("/api/ducktravel/duck/{id}")
+	@GetMapping("/api/ducktravels/duck/{id}")
 	public String getDuckTravelByDuck(@PathVariable("id") Integer id) {
 		List<Map<String, Object>> duckTravels = null;
 		if (id != null) {
-			duckTravels = new PostgresDTPersister(jdbcTemplate).getDuckTravelByDuck(id);
+			duckTravels = new PostgresDTPersister(jdbcTemplate).getDuckTravelViewByDuck(id);
 		}
 		if (duckTravels == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -132,11 +132,11 @@ public class WebApplication {
 		return getAsJson(duckTravels);
 	}
 
-	@GetMapping("/api/ducktravel/pond/{id}")
+	@GetMapping("/api/ducktravels/pond/{id}")
 	public String getDuckTravelByPond(@PathVariable("id") Integer id) {
 		List<Map<String, Object>> duckTravels = null;
 		if (id != null) {
-			duckTravels = new PostgresDTPersister(jdbcTemplate).getDuckTravelByPond(id);
+			duckTravels = new PostgresDTPersister(jdbcTemplate).getDuckTravelViewByPond(id);
 		}
 		if (duckTravels == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -144,9 +144,9 @@ public class WebApplication {
 		return getAsJson(duckTravels);
 	}
 
-	@PostMapping("/api/ducktravel/create")
-	public ModelAndView createDuckTravel(@RequestParam(value = "duckId") Integer duckId,
-		@RequestParam(value = "pondId") Integer pondId, @RequestParam(value = "arrival")
+	@PostMapping("/api/ducktravels/create")
+	public ModelAndView createDuckTravel(@RequestParam(value = "duck_id") Integer duckId,
+		@RequestParam(value = "pond_id") Integer pondId, @RequestParam(value = "arrival")
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date arrival,
 		@RequestParam(value = "departure", required = false)
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date departure) {
@@ -160,7 +160,7 @@ public class WebApplication {
 				FieldNames.DUCK_TRAVEL_POND_ID, pondId, FieldNames.DUCK_TRAVEL_ARRIVAL, arrival);
 		}
 		new PostgresDTPersister(jdbcTemplate).saveDuckTravel(createdDuckTravel);
-		String redirectPattern = "redirect:/api/ducktravel/duck/" + duckId;
+		String redirectPattern = "redirect:/api/ducktravels/duck/" + duckId;
 		return new ModelAndView(redirectPattern);
 	}
 

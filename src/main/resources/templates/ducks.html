@@ -41,9 +41,10 @@
     }
 
     function handleDuckForm() {
-        document.getElementById('duckCreator').addEventListener('submit', function (ev) {
+        const duckForm = document.getElementById('duckCreator');
+        duckForm.addEventListener('submit', function (ev) {
             ev.preventDefault();
-            postData('/api/ducks/create', 'name=' + document.getElementById('name').value
+            postData(duckForm.action, 'name=' + document.getElementById('name').value
                 + '&tagged=' + document.getElementById('tagged').value)
                 .then(() => {
                     loadDucks();

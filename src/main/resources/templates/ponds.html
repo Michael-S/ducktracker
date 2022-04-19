@@ -38,9 +38,10 @@
     }
 
     function handlePondForm() {
-        document.getElementById('pondCreator').addEventListener('submit', function (ev) {
+        const pondForm = document.getElementById('pondCreator');
+        pondForm.addEventListener('submit', function (ev) {
             ev.preventDefault();
-            postData('/api/ponds/create', 'name=' + document.getElementById('name').value
+            postData(pondForm.action, 'name=' + document.getElementById('name').value
                 + '&location=' + document.getElementById('location').value)
                 .then(() => {
                     loadPonds();

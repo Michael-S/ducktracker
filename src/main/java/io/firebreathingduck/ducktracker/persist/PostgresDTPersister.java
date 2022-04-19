@@ -133,8 +133,8 @@ public class PostgresDTPersister implements DTPersister {
     }
 
     @Override
-    public List<Map<String, Object>> getAllDuckTravel() {
-        return query("select * from duck_travel order by id ");
+    public List<Map<String, Object>> getAllDuckTravelViews() {
+        return query("select * from duck_travel_view order by duck_name, arrival, departure ");
     }
 
     @Override
@@ -191,13 +191,13 @@ public class PostgresDTPersister implements DTPersister {
     }
 
     @Override
-    public List<Map<String, Object>> getDuckTravelByDuck(int duckId) {
-        return query("select * from duck_travel where duck_id = ? order by arrival ", duckId);
+    public List<Map<String, Object>> getDuckTravelViewByDuck(Integer id) {
+        return query("select * from duck_travel_view where duck_id = ? order by arrival, departure ", id);
     }
 
     @Override
-    public List<Map<String, Object>> getDuckTravelByPond(int pondId) {
-        return query("select * from duck_travel where pond_id = ? order by arrival ", pondId);
+    public List<Map<String, Object>> getDuckTravelViewByPond(Integer id) {
+        return query("select * from duck_travel_view where pond_id = ? order by arrival, departure ", id);
     }
 
 

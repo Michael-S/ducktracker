@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Duck Travel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>Ducks</h1>
+    <form action="/api/ducktravels/create" id="duckTravelCreator" name="duckTravelCreator"
+        method="post">
+    	<p>Duck Name: <select id="duck_id"></select></p>
+        <p>Pond Name: <select id="pond_id"></select></p>
+        <p>Arrival: <input type="text" name="arrival" id="arrival"/></p>
+        <p>Departure: <input type="text" name="departure" id="departure"/></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+    <table id="ducktravels">
+        <thead><tr><td>Duck Name</td><td>Pond Name</td><td>Arrival</td><td>Departure</td></tr></thead>
+        <tbody></tbody>
+    </table>
+    <script src="js/base.js"></script>
+    <script>
+
+    function loadDucksAndPonds() {
+        const duckSelect = document.getElementById('duck_id');
+        fetch('/api/ducks')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(duck => {
+                    duckSelect[duckSelect.options.length] = new Option(duck['duck_name'], duck['id']);
+                });
+            });
+        const pondSelect = document.getElementById('pond_id');
+        fetch('/api/ponds')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(pond => {
+                    pondSelect[pondSelect.options.length] = new Option(pond['pond_name'], pond['id']);
+                });
+            });
+
+    }
+
+    function loadDuckTravels() {
+        const duckTravelsTable = document.getElementById("ducktravels");
+        const previousRows = duckTravelsTable.querySelectorAll('tr');
+        Array.prototype.forEach.call(previousRows, function(row) { row.remove(); });
+        fetch('/api/ducktravels')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(element => {
+                    let duckTravelsRow = duckTravelsTable.insertRow(-1);
+                    let duckNameCell = duckTravelsRow.insertCell(0);
+                    duckNameCell.appendChild(document.createTextNode(element['duck_name']));
+                    let pondNameCell = duckTravelsRow.insertCell(1);
+                    pondNameCell.appendChild(document.createTextNode(element['pond_name']));
+                    let duckArrivalCell = duckTravelsRow.insertCell(2);
+                    duckArrivalCell.appendChild(document.createTextNode(new Date(element['arrival'])));
+                    let duckDepartureCell = duckTravelsRow.insertCell(3);
+                    let departure = element['departure'];
+                    if (departure != null /* I should probably check for undefined */) {
+                        duckDepartureCell.appendChild(document.createTextNode(new Date(element['departure'])));
+                    }
+                });
+                console.log(data);
+            });
+    }
+
+    function handleDuckTravelsForm() {
+        const duckTravelForm = document.getElementById('duckTravelCreator');
+        duckTravelForm.addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            let formData = 'duck_id=' + document.getElementById('duck_id').value
+                + '&pond_id=' + document.getElementById('pond_id').value +
+                '&arrival=' + document.getElementById('arrival').value;
+            let departure = document.getElementById('departure').value;
+            if (departure != null) {
+                formData = formData + '&departure=' + departure;
+            }
+            postData(duckTravelForm.action, formData)
+                .then(() => {
+                    loadDuckTravels();
+                    document.getElementById('duckTravelCreator').reset();
+                })
+        });
+    }
+
+    ready(loadDuckTravels);
+    ready(loadDucksAndPonds);
+    ready(handleDuckTravelsForm);
+    </script>
+
+</body>
+</html>

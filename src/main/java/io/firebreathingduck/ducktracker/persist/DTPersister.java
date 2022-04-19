@@ -26,12 +26,12 @@ public interface DTPersister {
 
     Map<String, Object> getPond(int id);
 
-    List<Map<String, Object>> getAllDuckTravel();
+    List<Map<String, Object>> getAllDuckTravelViews();
 
     Map<String, Object> saveDuckTravel(Map<String, Object> duckTravelData);
 
-    List<Map<String, Object>> getDuckTravelByDuck(int duckId);
+    List<Map<String, Object>> getDuckTravelViewByDuck(Integer id);
 
-    List<Map<String, Object>> getDuckTravelByPond(int pondId);
+    List<Map<String, Object>> getDuckTravelViewByPond(Integer id);
 
 }
