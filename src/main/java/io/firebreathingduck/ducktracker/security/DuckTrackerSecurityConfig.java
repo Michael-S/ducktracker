@@ -29,6 +29,11 @@ public class DuckTrackerSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.logout()
 				.permitAll();
+		http
+			.headers()
+				.xssProtection()
+				.and()
+				.contentSecurityPolicy("script-src 'self'");
 	}
 
 	@Bean

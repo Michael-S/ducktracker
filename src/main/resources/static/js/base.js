@@ -1,5 +1,5 @@
 // Taken from the Mozilla Developer's Network example.  Overkill for this purpose, refine later.
-async function postData(url = '', data = {}) {
+export async function postData(url = '', data = {}) {
     // Default options are marked with *
     const response = await fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -18,7 +18,7 @@ async function postData(url = '', data = {}) {
     return response.json(); // parses JSON response into native JavaScript objects
 }
 
-function ready(fn) {
+export function ready(fn) {
     if (document.readyState != 'loading'){
       fn();
     } else {
@@ -26,7 +26,7 @@ function ready(fn) {
     }
 }
 
-function yyyymmdd(aDate) {
+export function yyyymmdd(aDate) {
     let result = '' + aDate.getFullYear() + '-';
     if (aDate.getMonth() < 9) {
         result += '0';
