@@ -6,6 +6,10 @@
 </head>
 <body>
 	<h1>Ponds</h1>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+    <p><a href="/ducks">Ducks</a> <a href="/ducktravels">Duck Travel History</a> Ponds </p>
     <form id="pondCreator" name="pondCreator" action="/api/ponds/create"
         method="post">
     	<p>Name: <input type="text" name="name" id="name"/></p>
@@ -17,7 +21,7 @@
         <thead><tr><td>Pond Name</td><td>Pond Location</td></tr></thead>
         <tbody></tbody>
     </table>
-    <script src="js/base.js"></script>
+    <script src="../js/base.js"></script>
     <script>
 
     function loadPonds() {

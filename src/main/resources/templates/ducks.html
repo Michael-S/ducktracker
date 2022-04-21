@@ -8,6 +8,10 @@
 </head>
 <body>
 	<h1>Ducks</h1>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+    <p>Ducks <a href="/ducktravels">Duck Travel History</a> <a href="/ponds">Ponds</a> </p>
     <form action="/api/ducks/create" id="duckCreator" name="duckCreator"
         <!--/* th:action="@{/duck}" th:object="${duck}" */-->
         method="post">
@@ -20,7 +24,7 @@
         <thead><tr><td>Duck Name</td><td>Tagged</td></tr></thead>
         <tbody></tbody>
     </table>
-    <script src="js/base.js"></script>
+    <script src="../js/base.js"></script>
     <script>
 
     function loadDucks() {

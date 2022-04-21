@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,19 @@ public class WebApplication {
 		} catch (IOException ioe) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	// We expect anyone that hits the base URL to want the human-usable web pages.
+	@GetMapping("/")
+	public ModelAndView getBaseUrl() {
+		String redirectPattern = "redirect:/ducktravels/";
+		return new ModelAndView(redirectPattern);
+	}
+
+	// Convenience to make the APIs 'discoverable'.
+	@GetMapping("/api")
+	public String getBaseApis() {
+		return getAsJson(Arrays.asList("/api/ducks", "/api/ponds", "/api/ducktravels"));
 	}
 
 	@GetMapping("/api/ducks")

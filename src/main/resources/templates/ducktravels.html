@@ -5,7 +5,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<h1>Ducks</h1>
+	<h1>Duck Travel </h1>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+    <p><a href="/ducks">Ducks</a> Duck Travel History <a href="/ponds">Ponds</a> </p>
     <form action="/api/ducktravels/create" id="duckTravelCreator" name="duckTravelCreator"
         method="post">
     	<p>Duck Name: <select id="duck_id"></select></p>
@@ -19,7 +23,7 @@
         <thead><tr><td>Duck Name</td><td>Pond Name</td><td>Arrival</td><td>Departure</td></tr></thead>
         <tbody></tbody>
     </table>
-    <script src="js/base.js"></script>
+    <script src="../js/base.js"></script>
     <script>
 
     function loadDucksAndPonds() {

@@ -27,6 +27,11 @@ public class DucksController {
         return "ducktravels";
     }
 
+    @GetMapping("/login")
+    public String loginForm(Model model) {
+        return "login";
+    }
+
     /*
     // I am replacing Spring-web's form handling with calls to the REST API
     // that I built.  I think that's simpler to work with, at least for now.
