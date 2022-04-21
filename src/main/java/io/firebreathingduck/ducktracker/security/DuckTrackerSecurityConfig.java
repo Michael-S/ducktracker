@@ -18,6 +18,7 @@ public class DuckTrackerSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.csrf().disable()    // temporarily
 			.authorizeRequests()
 				.antMatchers("/js").permitAll()
 				.anyRequest().authenticated()
