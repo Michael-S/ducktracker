@@ -2,7 +2,7 @@ import { postData, ready, yyyymmdd } from "./base.js";
 
 function loadDucks() {
     const duckTable = document.getElementById("ducks");
-    const previousRows = duckTable.querySelectorAll('tr');
+    const previousRows = duckTable.querySelectorAll('tr:not(:first-child)');
     Array.prototype.forEach.call(previousRows, function(row) { row.remove(); });
     fetch('/api/ducks')
         .then(response => response.json())

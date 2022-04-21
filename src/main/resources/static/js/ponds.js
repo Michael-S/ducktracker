@@ -2,7 +2,7 @@ import { postData, ready } from "./base.js";
 
 function loadPonds() {
     const pondTable = document.getElementById("ponds");
-    const previousRows = pondTable.querySelectorAll('tr');
+    const previousRows = pondTable.querySelectorAll('tr:not(:first-child)');
     Array.prototype.forEach.call(previousRows, function(row) { row.remove(); });
     fetch('/api/ponds')
         .then(response => response.json())

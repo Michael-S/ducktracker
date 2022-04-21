@@ -22,7 +22,7 @@ function loadDucksAndPonds() {
 
 function loadDuckTravels() {
     const duckTravelsTable = document.getElementById("ducktravels");
-    const previousRows = duckTravelsTable.querySelectorAll('tr');
+    const previousRows = duckTravelsTable.querySelectorAll('tr:not(:first-child)');
     Array.prototype.forEach.call(previousRows, function(row) { row.remove(); });
     fetch('/api/ducktravels')
         .then(response => response.json())
