@@ -14,6 +14,7 @@
         <p>Departure: <input type="text" name="departure" id="departure"/></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
+    <div id="errors" style="color:red"></div>
     <table id="ducktravels">
         <thead><tr><td>Duck Name</td><td>Pond Name</td><td>Arrival</td><td>Departure</td></tr></thead>
         <tbody></tbody>
@@ -55,11 +56,11 @@
                     let pondNameCell = duckTravelsRow.insertCell(1);
                     pondNameCell.appendChild(document.createTextNode(element['pond_name']));
                     let duckArrivalCell = duckTravelsRow.insertCell(2);
-                    duckArrivalCell.appendChild(document.createTextNode(new Date(element['arrival'])));
+                    duckArrivalCell.appendChild(document.createTextNode(yyyymmdd(new Date(element['arrival']))));
                     let duckDepartureCell = duckTravelsRow.insertCell(3);
                     let departure = element['departure'];
                     if (departure != null /* I should probably check for undefined */) {
-                        duckDepartureCell.appendChild(document.createTextNode(new Date(element['departure'])));
+                        duckDepartureCell.appendChild(document.createTextNode(yyyymmdd(new Date(element['departure']))));
                     }
                 });
                 console.log(data);
@@ -78,7 +79,13 @@
                 formData = formData + '&departure=' + departure;
             }
             postData(duckTravelForm.action, formData)
-                .then(() => {
+                .then((response) => {
+                    if (response['error'] != null && response['message'] != null) {
+                        document.getElementById('errors').innerHTML = response['message'].toString().replaceAll('\n', '<br>\n');
+                        return;
+                    } else {
+                        document.getElementById('errors').innerHTML = '';
+                    }
                     loadDuckTravels();
                     document.getElementById('duckTravelCreator').reset();
                 })

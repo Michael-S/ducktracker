@@ -25,3 +25,17 @@ function ready(fn) {
       document.addEventListener('DOMContentLoaded', fn);
     }
 }
+
+function yyyymmdd(aDate) {
+    let result = '' + aDate.getFullYear() + '-';
+    if (aDate.getMonth() < 9) {
+        result += '0';
+    }
+    result += (aDate.getMonth() + 1);
+    result += '-';
+    if (aDate.getDate() < 10) {
+        result += '0';
+    }
+    result += aDate.getDate();
+    return result;
+}

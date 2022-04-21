@@ -12,6 +12,7 @@
         <p>Location: <input type="text" name="location" id="location" /></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
+    <div id="errors" style="color:red"></div>
     <table id="ponds">
         <thead><tr><td>Pond Name</td><td>Pond Location</td></tr></thead>
         <tbody></tbody>
@@ -43,7 +44,13 @@
             ev.preventDefault();
             postData(pondForm.action, 'name=' + document.getElementById('name').value
                 + '&location=' + document.getElementById('location').value)
-                .then(() => {
+                .then((response) => {
+                    if (response['error'] != null && response['message'] != null) {
+                        document.getElementById('errors').innerHTML = response['message'].toString().replaceAll('\n', '<br>\n');
+                        return;
+                    } else {
+                        document.getElementById('errors').innerHTML = '';
+                    }
                     loadPonds();
                     document.getElementById('pondCreator').reset();
                 })

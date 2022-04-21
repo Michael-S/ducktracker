@@ -15,6 +15,7 @@
         <p>Tagged: <input type="text" <!--/* th:field="*{tagged}" */--> name="tagged" id="tagged" /></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
+    <div id="errors" style="color:red"></div>
     <table id="ducks">
         <thead><tr><td>Duck Name</td><td>Tagged</td></tr></thead>
         <tbody></tbody>
@@ -34,7 +35,7 @@
                     let duckNameCell = duckRow.insertCell(0);
                     duckNameCell.appendChild(document.createTextNode(element['duck_name']));
                     let duckTaggedCell = duckRow.insertCell(1);
-                    duckTaggedCell.appendChild(document.createTextNode(new Date(element['tagged'])));
+                    duckTaggedCell.appendChild(document.createTextNode(yyyymmdd(new Date(element['tagged']))));
                 });
                 console.log(data);
             });
@@ -46,7 +47,13 @@
             ev.preventDefault();
             postData(duckForm.action, 'name=' + document.getElementById('name').value
                 + '&tagged=' + document.getElementById('tagged').value)
-                .then(() => {
+                .then((response) => {
+                    if (response['error'] != null && response['message'] != null) {
+                        document.getElementById('errors').innerHTML = response['message'].toString().replaceAll('\n', '<br>\n');
+                        return;
+                    } else {
+                        document.getElementById('errors').innerHTML = '';
+                    }
                     loadDucks();
                     document.getElementById('duckCreator').reset();
                 })

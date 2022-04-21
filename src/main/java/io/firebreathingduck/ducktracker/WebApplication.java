@@ -14,9 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,17 +38,6 @@ public class WebApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebApplication.class, args);
-	}
-
-	@GetMapping("/hello")
-	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-		DTPersister persister = new PostgresDTPersister(jdbcTemplate);
-		String ducks = persister.getAllDucks().toString();
-		String ponds = persister.getAllPonds().toString();
-		String duckTravels = persister.getAllDuckTravelViews().toString();
-
-		return String.format("Hello %s! The ducks are %s, the ponds are %s, and the travel is %s.",
-			name, ducks, ponds, duckTravels);
 	}
 
 	private String getAsJson(Object o) {
@@ -78,7 +69,18 @@ public class WebApplication {
 
 	@PostMapping("/api/ducks/create")
 	public ModelAndView createDuck(@RequestParam(value = "name") String duckName,
-		@RequestParam(value = "tagged") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date tagged) {
+		@RequestParam(value = "tagged", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date tagged) {
+		List<String> errors = new ArrayList<>();
+		if (duckName == null || duckName.length() < 3 || duckName.length() > 200) {
+			errors.add("Duck name must be present and between 3 and 200 characters in length.");
+		}
+		if (tagged == null) {
+			errors.add("The date the duck was tagged must be present and in numeric yyyy-mm-dd format.");
+		}
+		if (!errors.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errors.stream().collect(Collectors.joining("\n")));
+		}
+
 		Map<String, Object> createdDuck = Map.of(FieldNames.DUCK_NAME, duckName,
 			FieldNames.DUCK_TAGGED, tagged);
 		createdDuck = new PostgresDTPersister(jdbcTemplate).saveDuck(createdDuck);
@@ -107,6 +109,16 @@ public class WebApplication {
 	@PostMapping("/api/ponds/create")
 	public ModelAndView createPond(@RequestParam(value = "name") String pondName,
 		@RequestParam(value = "location") String pondLocation) {
+		List<String> errors = new ArrayList<>();
+		if (pondName == null || pondName.length() < 3 || pondName.length() > 200) {
+			errors.add("Pond name must be present and between 3 and 200 characters in length.");
+		}
+		if (pondLocation == null || pondLocation.length() < 5 || pondLocation.length() > 500) {
+			errors.add("Pond location must be present and between 5 and 500 characters in length.");
+		}
+		if (!errors.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errors.stream().collect(Collectors.joining("\n")));
+		}
 		Map<String, Object> createdPond = Map.of(FieldNames.POND_NAME, pondName,
 			FieldNames.POND_LOCATION, pondLocation);
 		createdPond = new PostgresDTPersister(jdbcTemplate).savePond(createdPond);
@@ -146,10 +158,32 @@ public class WebApplication {
 
 	@PostMapping("/api/ducktravels/create")
 	public ModelAndView createDuckTravel(@RequestParam(value = "duck_id") Integer duckId,
-		@RequestParam(value = "pond_id") Integer pondId, @RequestParam(value = "arrival")
+		@RequestParam(value = "pond_id") Integer pondId, @RequestParam(value = "arrival", required = false)
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date arrival,
 		@RequestParam(value = "departure", required = false)
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date departure) {
+		List<String> errors = new ArrayList<>();
+		DTPersister dtPersister = new PostgresDTPersister(jdbcTemplate);
+		Map<String, Object> duckData = dtPersister.getDuck(duckId);
+		if (duckData == null || duckData.isEmpty()) {
+			errors.add("A valid duck_id must be supplied, no duck for duck_id " + duckId + " was found.");
+		}
+		Map<String, Object> pondData = dtPersister.getPond(pondId);
+		if (pondData == null || pondData.isEmpty()) {
+			errors.add("A valid pond_id must be supplied, no pond for pond_id " + pondId + " was found.");
+		}		
+		if (arrival == null) {
+			errors.add("An arrival date for the duck to reach the pond must be provided.");
+		} else if (arrival != null
+			&& duckData != null
+			&& duckData.get(FieldNames.DUCK_TAGGED) != null
+			&& ((Date)duckData.get(FieldNames.DUCK_TAGGED)).after(arrival)) {
+			errors.add("The arrival date for the duck at a pond has to be after the date the duck was tagged.");
+		}
+		if (!errors.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errors.stream().collect(Collectors.joining("\n")));
+		}			
+
 		Map<String, Object> createdDuckTravel = null;
 		if (departure != null) {
 			createdDuckTravel = Map.of(FieldNames.DUCK_TRAVEL_DUCK_ID, duckId,
@@ -159,7 +193,7 @@ public class WebApplication {
 			createdDuckTravel = Map.of(FieldNames.DUCK_TRAVEL_DUCK_ID, duckId,
 				FieldNames.DUCK_TRAVEL_POND_ID, pondId, FieldNames.DUCK_TRAVEL_ARRIVAL, arrival);
 		}
-		new PostgresDTPersister(jdbcTemplate).saveDuckTravel(createdDuckTravel);
+		dtPersister.saveDuckTravel(createdDuckTravel);
 		String redirectPattern = "redirect:/api/ducktravels/duck/" + duckId;
 		return new ModelAndView(redirectPattern);
 	}
