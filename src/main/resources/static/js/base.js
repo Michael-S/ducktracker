@@ -1,3 +1,5 @@
+const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+
 // Taken from the Mozilla Developer's Network example.  Overkill for this purpose, refine later.
 export async function postData(url = '', data = {}) {
     // Default options are marked with *
@@ -8,7 +10,8 @@ export async function postData(url = '', data = {}) {
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
             //'Content-Type': 'application/json'
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-XSRF-TOKEN': csrfToken
         },
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
